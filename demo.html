@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#073F40">
+  <title>Live demo</title>
+  <link rel="icon" href="assets/brand/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body.demo { background: linear-gradient(160deg, #073F40 0%, #0B5B5A 55%, #0E7C7B 100%) fixed; color: #fff; min-height: 100vh; }
+    .d-top { display: flex; align-items: center; gap: 12px; padding: 16px 28px; }
+    .d-top .brand-txt small { color: rgba(255,255,255,.65); }
+    .d-top .brand { flex: 1; }
+    .d-top .lang { background: rgba(255,255,255,.12); color: #fff; box-shadow: none; }
+    .d-intro { max-width: 1400px; margin: 0 auto; padding: 4px 28px 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 24px; align-items: end; }
+    .d-intro h1 { font-size: 30px; font-weight: 700; }
+    .d-intro p { color: rgba(255,255,255,.8); margin-top: 6px; max-width: 48ch; }
+    .d-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .d-steps li { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14); border-radius: 16px; padding: 12px 14px; font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,.9); }
+    .d-steps b { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #FBBF24; color: #3B2500; font-size: 13px; margin-inline-end: 6px; }
+    .d-stage { max-width: 1400px; margin: 0 auto; padding: 0 28px 32px; display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .d-col h2 { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); margin-bottom: 10px; }
+    .d-col h2 a { font-size: 12.5px; font-weight: 500; color: #9FF3DD; display: inline-flex; gap: 4px; align-items: center; }
+    .d-col h2 a .i { width: 14px; height: 14px; }
+    .phone { width: 400px; height: 820px; border-radius: 52px; padding: 12px; background: #0B1515; box-shadow: 0 30px 60px rgba(0,0,0,.35), inset 0 0 0 2px #2B3A3A; position: relative; }
+    .phone::before { content: ''; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); width: 64px; height: 5px; border-radius: 9px; background: #2B3A3A; z-index: 2; }
+    .phone iframe { width: 100%; height: 100%; border: 0; border-radius: 40px; background: #EEF5F3; display: block; }
+    .screen { border-radius: 20px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,.3); background: #EEF4F3; }
+    .screen .bar { display: flex; gap: 6px; padding: 10px 14px; background: #E2EAE9; direction: ltr; }
+    .screen .bar span { width: 11px; height: 11px; border-radius: 50%; background: #F87171; }
+    .screen .bar span:nth-child(2) { background: #FBBF24; } .screen .bar span:nth-child(3) { background: #34D399; }
+    .screen iframe { width: 100%; height: 799px; border: 0; display: block; }
+    @media (max-width: 1100px) {
+      .d-intro, .d-stage { grid-template-columns: 1fr; }
+      .d-col.ph { justify-self: center; }
+    }
+    @media (max-width: 700px) {
+      .d-top, .d-intro, .d-stage { padding-inline: 16px; }
+      .d-steps { grid-template-columns: 1fr; }
+      .phone { width: min(400px, calc(100vw - 32px)); height: 760px; border-radius: 44px; }
+      .d-intro h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body class="demo" data-title-key="t_demo">
+  <header class="d-top">
+    <a class="brand" href="demo.html">
+      <span class="logo" id="logo"></span>
+      <span class="brand-txt"><b data-brand="name"></b><small data-i18n="demo_tag"></small></span>
+    </a>
+    <button class="lang" id="langBtn" type="button"></button>
+  </header>
+  <section class="d-intro">
+    <div><h1 data-i18n="p_title"></h1><p data-i18n="p_sub"></p></div>
+    <ol class="d-steps">
+      <li><b>1</b><span data-i18n="p_s1"></span></li>
+      <li><b>2</b><span data-i18n="p_s2"></span></li>
+      <li><b>3</b><span data-i18n="p_s3"></span></li>
+    </ol>
+  </section>
+  <main class="d-stage">
+    <div class="d-col ph">
+      <h2><span data-i18n="p_phone"></span><a href="index.html" target="_blank" rel="noopener"><span data-i18n="p_open"></span></a></h2>
+      <div class="phone"><iframe src="index.html" title="patient" loading="eager"></iframe></div>
+    </div>
+    <div class="d-col">
+      <h2><span data-i18n="p_staff"></span><a href="staff.html" target="_blank" rel="noopener"><span data-i18n="p_open"></span></a></h2>
+      <div class="screen"><div class="bar" aria-hidden="true"><span></span><span></span><span></span></div><iframe src="staff.html" title="reception"></iframe></div>
+    </div>
+  </main>
+  <script src="assets/config.js"></script>
+  <script src="assets/i18n.js"></script>
+  <script src="assets/core.js"></script>
+  <script>
+    document.getElementById('logo').innerHTML = '<img src="' + APP.brand.logoIcon + '" alt="" width="40" height="40">';
+    Q.langButton(document.getElementById('langBtn'));
+    Q.applyLang();
+  </script>
+</body>
+</html>
