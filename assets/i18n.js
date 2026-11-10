@@ -22,7 +22,7 @@ APP.i18n = {
     /* home */
     hello: 'أهلاً بك', hello_name: 'أهلاً {n}', home_h: 'كيف نخدمك اليوم؟', home_sub: 'ثلاث خدمات سريعة من جوالك، بدون تطبيق.',
     a1_t: 'مواعيدي', a1_d: 'احجز موعداً أو ألغِه بضغطة',
-    a2_t: 'قيّم زيارتك', a2_d: 'واكسب {n} نقطة تستبدلها بهدية أو خصم',
+    a2_t: 'قيّمنا على خرائط Google', a2_d: 'قيّم زيارتك وانشر تقييمك للناس',
     a3_t: 'احفظ رقم الرعاية', a3_d: 'أرقامنا في جوالك وقت ما تحتاجنا',
     next_appt: 'موعدك القادم', pt_balance: 'رصيد نقاطك',
     pt_guest_t: 'اجمع نقاطاً مع كل زيارة', pt_guest_d: 'سجّل برقم جوالك وخذ {n} نقطة ترحيب الآن.',
@@ -51,16 +51,19 @@ APP.i18n = {
     bk_done: 'تم حجز موعدك', bk_done_d: 'تقدر تلغيه أو تحجز غيره من صفحة «مواعيدي».',
 
     /* rating */
-    rt_t: 'قيّم زيارتك', rt_sub: 'تقييمك يصل للإدارة مباشرة.', rt_q: 'كيف كانت زيارتك؟', rt_tap: 'اضغط على النجوم',
+    rt_t: 'قيّم زيارتك', rt_sub: 'قيّم هنا، وبعدها انشر تقييمك على خرائط Google بضغطة.', rt_q: 'كيف كانت زيارتك؟', rt_tap: 'اضغط على النجوم',
     rt_l1: 'سيئة', rt_l2: 'أقل من المتوقع', rt_l3: 'مقبولة', rt_l4: 'جيدة', rt_l5: 'ممتازة',
     rt_good: 'وش أعجبك؟', rt_bad: 'وش نحتاج نحسّن؟',
     tg_doctor: 'الطبيب', tg_reception: 'الاستقبال', tg_wait: 'وقت الانتظار', tg_clean: 'النظافة', tg_booking: 'الحجز', tg_parking: 'المواقف',
     rt_note: 'ملاحظة (اختياري)', rt_note_ph: 'اكتب لنا بكلماتك…',
-    rt_earn: 'أرسل تقييمك وخذ {n} نقطة', rt_earn_guest: 'أرسل تقييمك، وسجّل برقم جوالك بعدها لتأخذ {n} نقطة', rt_send: 'أرسل التقييم',
+    rt_earn: 'أرسل تقييمك وخذ {n} نقطة', rt_earn_guest: 'أرسل تقييمك، وسجّل برقم جوالك بعدها لتأخذ {n} نقطة', rt_send: 'التالي', rt_f1: 'قيّم زيارتك', rt_f2: 'انشر على خرائط Google',
+    th_saved: 'وصل تقييمك للإدارة', th_final: 'خطوة أخيرة: انشر تقييمك على خرائط Google', g_where: 'خرائط Google · يظهر لكل من يبحث عنّا',
+    g_s1: 'اضغط الزر تحت، وتنفتح صفحة التقييم في Google.', g_s2: 'اختر نفس عدد النجوم ({n}).', g_s3_note: 'الصق ملاحظتك (نسخناها لك) واضغط «نشر».', g_s3: 'اكتب كلمتين عن زيارتك واضغط «نشر».',
+    g_opened: 'فتحنا لك صفحة التقييم في Google. بعد ما تضغط «نشر» يظهر تقييمك للناس.', th_pts_t: 'وأضفنا {n} نقطة لرصيدك على تقييم زيارتك',
     th_t: 'شكراً لك!', th_got: 'أضفنا {n} نقطة لرصيدك. رصيدك الآن {b} نقطة.',
     th_claim_t: 'احفظ {n} نقطة باسمك', th_claim_d: 'سجّل برقم جوالك وتنضاف النقاط لرصيدك.',
     th_low: 'نأسف أن تجربتك ما كانت كما تستحق. وصل تقييمك للإدارة.', th_low_m: 'نأسف أن تجربتك ما كانت كما تستحق. وصل تقييمك للإدارة، وبيتواصل معك فريق خدمة المراجعين.',
-    g_t: 'قيّمنا على Google', g_d: 'تقييمك على خرائط Google يساعد غيرك يختار المكان المناسب.', g_btn: 'افتح Google وقيّمنا', g_copy: 'نسخنا ملاحظتك، الصقها هناك',
+    g_t: 'قيّمنا على Google', g_d: 'تقييمك على خرائط Google يساعد غيرك يختار المكان المناسب.', g_btn: 'انشر تقييمي على خرائط Google', g_copy: 'نسخنا ملاحظتك، الصقها هناك',
     th_spend: 'استبدل نقاطك',
 
     /* points */
@@ -108,6 +111,17 @@ APP.i18n = {
     rs_t: 'إعادة البيانات التجريبية؟', rs_d: 'نرجع المواعيد والتقييمات والنقاط كما كانت في البداية.', rs_yes: 'أعد البيانات', rs_done: 'رجعت البيانات التجريبية',
     n_cancel: 'إلغاء جديد من مراجع', n_book: 'حجز جديد من البوابة', n_rating: 'تقييم جديد', n_redeem: 'مراجع استبدل نقاطه', n_wait: 'مراجع انضم لقائمة الانتظار', n_google: 'مراجع ذهب لتقييم Google', n_vcf: 'مراجع حفظ رقم الرعاية',
 
+    /* patients and profiles */
+    s_tab4: 'المراجعون', k_more: 'عرض الأسماء', ls_tap: 'اضغط على أي اسم لتفتح ملفه كاملاً.', ls_empty: 'ما فيه أحد في هذه القائمة.', ls_from: 'بدل موعد {n} الملغي',
+    pf_since: 'مسجّل منذ {d}', pf_new: 'مستخدم جديد', pf_no_wallet: 'لا يوجد رصيد نقاط بعد.', pf_wa: 'واتساب',
+    pf_points: 'النقاط', pf_visits: 'زيارات تمت', pf_upcoming: 'مواعيد قادمة', pf_cancelled: 'إلغاءات', pf_avg: 'متوسط التقييم',
+    pf_appts: 'المواعيد', pf_ratings: 'التقييمات', pf_waiting: 'في قائمة انتظار {d}', pp_balance: 'الرصيد: {n} نقطة',
+    k_patients: 'كل المراجعين', k_new_week: 'سجّلوا هذا الأسبوع', k_balance: 'نقاط في الأرصدة', k_active_v: 'قسائم صالحة',
+    pt_search: 'ابحث بالاسم أو رقم الجوال', th_last: 'آخر نشاط',
+    s_activity: 'حركة النقاط', s_activity_d: 'كل نقطة دخلت أو خرجت، ومن صاحبها. اضغط على الاسم لترى ملفه.', s_activity_all: 'كل حركة النقاط',
+    f_new_user: 'مستخدم جديد سجّل: {n}', f_new_user_sub: 'نقاط الترحيب: {n}', n_new_user: 'مستخدم جديد سجّل في البوابة',
+    n_f_users: 'مستخدمون جدد', n_sec_users: 'مستخدمون جدد', n_sec_activity: 'المواعيد والتقييمات والنقاط',
+
     /* presenter */
     t_demo: 'عرض مباشر', p_title: 'جرّبها بنفسك', p_sub: 'على اليمين جوال المراجع، وعلى اليسار شاشة الاستقبال. كل ضغطة في الجوال تظهر في الشاشة فوراً.',
     p_s1: 'ألغِ الموعد التجريبي من «مواعيدي»، وشوف الإلغاء والتعبئة التلقائية في الاستقبال.',
@@ -135,7 +149,7 @@ APP.i18n = {
 
     hello: 'Welcome', hello_name: 'Hi {n}', home_h: 'What do you need today?', home_sub: 'Three quick things from your phone. No app to install.',
     a1_t: 'My visits', a1_d: 'Book a visit or cancel one in a tap',
-    a2_t: 'Rate your visit', a2_d: 'Get {n} points for a gift or money off',
+    a2_t: 'Rate us on Google Maps', a2_d: 'Rate your visit and post it for others to see',
     a3_t: 'Save our care number', a3_d: 'Our numbers on your phone for when you need us',
     next_appt: 'Your next visit', pt_balance: 'Your points',
     pt_guest_t: 'Earn points with every visit', pt_guest_d: 'Sign in with your mobile and get {n} welcome points now.',
@@ -161,16 +175,19 @@ APP.i18n = {
     bk_need_si: "After you confirm we'll ask for your mobile, once.", bk_confirm: 'Confirm booking',
     bk_done: 'Your visit is booked', bk_done_d: 'You can cancel it or book another one from "My visits".',
 
-    rt_t: 'Rate your visit', rt_sub: 'Your rating goes straight to management.', rt_q: 'How was your visit?', rt_tap: 'Tap the stars',
+    rt_t: 'Rate your visit', rt_sub: 'Rate here, then post your rating on Google Maps in one tap.', rt_q: 'How was your visit?', rt_tap: 'Tap the stars',
     rt_l1: 'Bad', rt_l2: 'Below what I expected', rt_l3: 'Okay', rt_l4: 'Good', rt_l5: 'Excellent',
     rt_good: 'What did you like?', rt_bad: 'What should we fix?',
     tg_doctor: 'Doctor', tg_reception: 'Reception', tg_wait: 'Waiting time', tg_clean: 'Cleanliness', tg_booking: 'Booking', tg_parking: 'Parking',
     rt_note: 'Note (optional)', rt_note_ph: 'Tell us in your own words…',
-    rt_earn: 'Send your rating and get {n} points', rt_earn_guest: 'Send your rating, then sign in with your mobile to get {n} points', rt_send: 'Send rating',
+    rt_earn: 'Send your rating and get {n} points', rt_earn_guest: 'Send your rating, then sign in with your mobile to get {n} points', rt_send: 'Next', rt_f1: 'Rate your visit', rt_f2: 'Post on Google Maps',
+    th_saved: 'Management has your rating', th_final: 'Last step: post your rating on Google Maps', g_where: 'Google Maps · everyone who searches for us sees it',
+    g_s1: 'Tap the button below to open the review page on Google.', g_s2: 'Pick the same number of stars ({n}).', g_s3_note: 'Paste your note (we copied it for you) and tap "Post".', g_s3: 'Write a few words about your visit and tap "Post".',
+    g_opened: 'We opened the review page on Google. Once you tap "Post", people can see it.', th_pts_t: 'We also added {n} points to your balance for rating your visit',
     th_t: 'Thank you!', th_got: 'We added {n} points. Your balance is now {b} points.',
     th_claim_t: 'Keep {n} points in your name', th_claim_d: 'Sign in with your mobile and the points go to your balance.',
     th_low: "We're sorry the visit wasn't what it should be. Management has your rating.", th_low_m: "We're sorry the visit wasn't what it should be. Management has your rating and the patient care team will contact you.",
-    g_t: 'Rate us on Google', g_d: 'A rating on Google Maps helps other people choose where to go.', g_btn: 'Open Google and rate us', g_copy: 'We copied your note. Paste it there.',
+    g_t: 'Rate us on Google', g_d: 'A rating on Google Maps helps other people choose where to go.', g_btn: 'Post my rating on Google Maps', g_copy: 'We copied your note. Paste it there.',
     th_spend: 'Spend your points',
 
     pt_t: 'My points and rewards', pt_sub: 'Earn points with every visit and every rating. Swap them for money off medicines and treatment, or for a gift.',
@@ -214,6 +231,16 @@ APP.i18n = {
     del_t: 'Delete this visit for good?', del_d: "It disappears from the log and can't be brought back.", del_done: 'Deleted',
     rs_t: 'Reset the demo data?', rs_d: 'Visits, ratings and points go back to how they started.', rs_yes: 'Reset', rs_done: 'Demo data reset',
     n_cancel: 'New cancellation from a patient', n_book: 'New booking from the portal', n_rating: 'New rating', n_redeem: 'A patient redeemed points', n_wait: 'A patient joined the waiting list', n_google: 'A patient went to Google', n_vcf: 'A patient saved the care number',
+
+    s_tab4: 'Patients', k_more: 'See names', ls_tap: 'Tap any name to open their full profile.', ls_empty: 'Nobody on this list.', ls_from: "In place of {n}'s cancelled visit",
+    pf_since: 'Signed up {d}', pf_new: 'New user', pf_no_wallet: 'No points account yet.', pf_wa: 'WhatsApp',
+    pf_points: 'Points', pf_visits: 'Visits done', pf_upcoming: 'Upcoming', pf_cancelled: 'Cancelled', pf_avg: 'Avg rating',
+    pf_appts: 'Visits', pf_ratings: 'Ratings', pf_waiting: 'On the waiting list for {d}', pp_balance: 'Balance: {n} pts',
+    k_patients: 'All patients', k_new_week: 'Signed up this week', k_balance: 'Points in balances', k_active_v: 'Valid vouchers',
+    pt_search: 'Search by name or mobile', th_last: 'Last activity',
+    s_activity: 'Points activity', s_activity_d: 'Every point earned or spent, and whose it was. Tap a name to open the profile.', s_activity_all: 'All points activity',
+    f_new_user: 'New user signed up: {n}', f_new_user_sub: 'Welcome points: {n}', n_new_user: 'A new user signed up on the portal',
+    n_f_users: 'New users', n_sec_users: 'New users', n_sec_activity: 'Visits, ratings and points',
 
     t_demo: 'Live demo', p_title: 'Try it yourself', p_sub: "The patient's phone is on the left and the reception screen is on the right. Every tap on the phone shows up on the screen straight away.",
     p_s1: 'Cancel the demo visit in "My visits" and watch reception get it and refill the time.',

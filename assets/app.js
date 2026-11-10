@@ -243,6 +243,7 @@
     if (RT.done) return thanks();
     const m = BK.me();
     let h = head(t('rt_t'), t('rt_sub'));
+    h += '<ol class="rt-flow"><li class="on"><span>1</span>' + esc(t('rt_f1')) + '</li><li><span>2</span>' + icon('google', 'sm') + esc(t('rt_f2')) + '</li></ol>';
     h += '<div class="card rate-card"><p class="q">' + esc(t('rt_q')) + '</p><div class="stars" role="radiogroup" aria-label="' + esc(t('rt_q')) + '">' +
       [1, 2, 3, 4, 5].map(n => '<button type="button" role="radio" aria-checked="' + (RT.stars === n) + '" aria-label="' + esc(t('rt_l' + n)) + '" class="star' + (n <= RT.stars ? ' on' : '') + '" data-star="' + n + '">' + icon('star') + '</button>').join('') +
       '</div><p class="star-lbl" aria-live="polite">' + esc(RT.stars ? t('rt_l' + RT.stars) : t('rt_tap')) + '</p></div>';
@@ -252,22 +253,25 @@
         '<label class="fld"><span>' + esc(t('rt_note')) + '</span><textarea id="rtNote" rows="3" maxlength="500" placeholder="' + esc(t('rt_note_ph')) + '">' + esc(RT.note) + '</textarea></label>';
     }
     h += '<div class="earn-banner">' + icon('gift') + '<span>' + esc(m ? t('rt_earn', { n: RW.perRating }) : t('rt_earn_guest', { n: RW.perRating })) + '</span></div>';
-    h += '<div class="cta"><button class="btn primary block lg" type="button" id="rtGo" ' + (RT.stars ? '' : 'disabled') + '>' + icon('star') + esc(t('rt_send')) + '</button></div>';
+    h += '<div class="cta"><button class="btn primary block lg" type="button" id="rtGo" ' + (RT.stars ? '' : 'disabled') + '>' + esc(t('rt_send')) + icon('chevron', 'chev') + '</button></div>';
     view.innerHTML = h;
   }
   function thanks() {
     const r = RT.done, m = BK.me(), w = m ? BK.wallet(m.phone) : null;
+    const stars = '<span class="g-stars" aria-label="' + r.stars + '/5">' + [1, 2, 3, 4, 5].map(n => icon('star', n <= r.stars ? 'on' : '')).join('') + '</span>';
     let h = '<div class="done-view thanks">';
-    if (r.pts) h += '<div class="burst" aria-hidden="true"><b dir="ltr">+' + r.pts + '</b><small>' + esc(t('pts_word')) + '</small></div>';
-    else h += '<div class="done-ic">' + icon('check') + '</div>';
-    h += '<h1>' + esc(t('th_t')) + '</h1>';
-    if (r.pts) h += '<p class="muted">' + esc(t('th_got', { n: r.pts, b: num(w.points) })) + '</p><div class="card">' + progress(w.points) + '</div>';
-    else h += '<div class="card claim"><b>' + esc(t('th_claim_t', { n: RW.perRating })) + '</b><p>' + esc(t('th_claim_d')) + '</p><button class="btn amber block lg" type="button" id="thClaim">' + esc(t('si_short')) + '</button></div>';
+    h += '<p class="g-kicker">' + icon('check', 'sm') + esc(t('th_saved')) + '</p><h1>' + esc(t('th_final')) + '</h1>';
+    // the main step: post the same rating on Google Maps (shown for every rating, high or low)
+    h += '<div class="g-hero' + (RT.googled ? ' sent' : '') + '"><div class="g-top"><span class="g-ic">' + icon('pin') + '</span><div><b>' + esc(L(APP.brand.name)) + '</b><small>' + esc(t('g_where')) + '</small></div></div>' +
+      '<div class="g-preview">' + stars + (r.note ? '<p>“' + esc(r.note) + '”</p>' : '') + '</div>' +
+      '<ol class="g-steps"><li>' + esc(t('g_s1')) + '</li><li>' + esc(t('g_s2', { n: r.stars })) + '</li><li>' + esc(r.note ? t('g_s3_note') : t('g_s3')) + '</li></ol>' +
+      '<button class="btn gblue block lg" type="button" id="gGo">' + icon('google') + esc(t('g_btn')) + icon('external', 'sm') + '</button>' +
+      (RT.googled ? '<p class="g-done">' + icon('check', 'sm') + esc(t('g_opened')) + '</p>' : '') + '</div>';
     if (r.stars <= 3) h += '<div class="card soft">' + icon('shield') + '<p>' + esc(m ? t('th_low_m') : t('th_low')) + '</p></div>';
-    h += '<div class="g-card"><div class="g-top"><span class="g-ic">' + icon('google') + '</span><div><b>' + esc(t('g_t')) + '</b><p>' + esc(t('g_d')) + '</p></div></div>' +
-      '<button class="btn google block lg" type="button" id="gGo">' + icon('star') + esc(t('g_btn')) + icon('external', 'sm') + '</button>' +
-      (r.note ? '<p class="small muted">' + icon('copy', 'sm') + esc(t('g_copy')) + '</p>' : '') + '</div>';
-    h += '<div class="sheet-row"><a class="btn primary block lg" href="#points">' + icon('gift') + esc(t('th_spend')) + '</a><a class="btn ghost block lg" href="#home">' + esc(t('home')) + '</a></div></div>';
+    // points for rating the visit here (not for the Google review)
+    if (r.pts) h += '<div class="card pts-thanks"><div class="pts-top"><span class="pts-ic">' + icon('gift') + '</span><div><small>' + esc(t('th_pts_t', { n: r.pts })) + '</small><b>' + num(w.points) + ' <span>' + esc(t('pts_word')) + '</span></b></div></div>' + progress(w.points) + '</div>';
+    else h += '<div class="card claim"><b>' + esc(t('th_claim_t', { n: RW.perRating })) + '</b><p>' + esc(t('th_claim_d')) + '</p><button class="btn amber block lg" type="button" id="thClaim">' + esc(t('si_short')) + '</button></div>';
+    h += '<div class="sheet-row"><a class="btn ghost block lg" href="#points">' + icon('gift') + esc(t('th_spend')) + '</a><a class="btn ghost block lg" href="#home">' + esc(t('home')) + '</a></div></div>';
     view.innerHTML = h;
   }
   function sendRating() {
@@ -281,6 +285,7 @@
     if (r && r.note && navigator.clipboard) navigator.clipboard.writeText(r.note).catch(() => {});
     if (r) BK.markGoogle(r.id);
     window.open(APP.brand.googleReviewUrl || APP.brand.mapsUrl, '_blank', 'noopener');
+    RT.googled = true; render();
   }
 
   /* =========================================================

@@ -4,6 +4,7 @@
 (function () {
   const { Store, L, t, ref } = Q;
 
+  const SEED_V = 4;
   const SLOTS = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30'];
   const DAYS_AHEAD = 14;
   const pad = n => String(n).padStart(2, '0');
@@ -23,10 +24,31 @@
   const fakePhone = r => '05' + String(Math.floor(r() * 1e8)).padStart(8, '0');
 
   function seed() {
-    if (Store.get('seeded', false)) return;
+    // bump SEED_V when the sample data changes, so browsers that opened an older version start fresh
+    if (Store.get('seeded', 0) === SEED_V) return;
+    if (Store.get('seeded', 0)) Store.clear();
     const r = rng(20261110), P = APP.patients, now = Date.now(), H = 3600e3, t0 = today();
-    const pick = () => P[Math.floor(r() * P.length)];
+    // a fixed pool of sample patients (first and family names mixed, one mobile each),
+    // so one person shows up across visits, ratings, points and the waiting list
+    const first = P.map(x => ({ ar: x.ar.split(' ')[0], en: x.en.split(' ')[0] }));
+    const fam = P.map(x => ({ ar: x.ar.split(' ').slice(1).join(' '), en: x.en.split(' ').slice(1).join(' ') }));
+    const pool = [];
+    for (let i = 0; i < 200; i++) {
+      const f = first[i % 16], g = fam[(i * 7 + Math.floor(i / 16) * 3) % 16];
+      pool.push({ name: { ar: f.ar + ' ' + g.ar, en: f.en + ' ' + g.en }, phone: fakePhone(r) });
+    }
+    const REG = 197; // the last three are brand-new sign-ups
+    const pick = () => pool[Math.floor(r() * REG)];
     const appts = []; let n = 0;
+    const mk = (doc, d, s, extra) => { const pt = pick(); return Object.assign({ id: 'A-' + (3100 + n++), name: pt.name, phone: pt.phone, doctor: doc.id, date: dkey(d), time: s, status: 'booked', by: r() > .35 ? 'portal' : 'staff', t: now - (2 + r() * 120) * H, seed: true }, extra); };
+    // past three weeks: finished visits, so profiles have a history
+    for (let i = 21; i >= 1; i--) {
+      const d = addDays(t0, -i);
+      APP.doctors.forEach(doc => {
+        if (!works(doc, d)) return;
+        SLOTS.forEach(s => { if (r() < .22) { const a = mk(doc, d, s); a.status = 'done'; a.t = when(a) - (24 + r() * 72) * H; appts.push(a); } });
+      });
+    }
     for (let i = 0; i < DAYS_AHEAD; i++) {
       const d = addDays(t0, i);
       APP.doctors.forEach(doc => {
@@ -36,7 +58,7 @@
         const p = full ? 1 : Math.max(.15, .5 - i * .03);
         SLOTS.forEach(s => {
           if (r() > p) return;
-          const a = { id: 'A-' + (3100 + n++), name: pick(), phone: fakePhone(r), doctor: doc.id, date: dkey(d), time: s, status: 'booked', by: r() > .35 ? 'portal' : 'staff', t: now - (2 + r() * 120) * H, seed: true };
+          const a = mk(doc, d, s);
           if (full) a.full = true;
           if (when(a) < now) a.status = 'done';
           else if (i === 1 && r() > .45) a.status = 'confirmed';
@@ -48,7 +70,8 @@
     const future = appts.filter(a => isActive(a) && when(a) > now && !a.full);
     [[2, 1], [5, 1], [9, 0], [14, 1], [20, 1], [26, 0], [31, 1]].forEach(([k, refill], j) => {
       const src = future[(k * 3) % future.length]; if (!src) return;
-      const c = Object.assign({}, src, { id: 'A-' + (3000 + j), name: pick(), phone: fakePhone(r), status: 'cancelled', cancelledBy: j === 4 ? 'staff' : 'patient', cancelledAt: now - (5 + j * 17) * H, cancelReason: ['cant', 'better', 'mistake', 'other'][j % 4] });
+      const pt = pick();
+      const c = Object.assign({}, src, { id: 'A-' + (3000 + j), name: pt.name, phone: pt.phone, status: 'cancelled', cancelledBy: j === 4 ? 'staff' : 'patient', cancelledAt: now - (5 + j * 17) * H, cancelReason: ['cant', 'better', 'mistake', 'other'][j % 4] });
       if (refill) { src.by = 'waitlist'; src.fromWaitlist = true; c.refilledBy = src.id; } else src.status = 'gone';
       appts.push(c);
     });
@@ -56,41 +79,53 @@
 
     // waiting list: one "any day" patient per doctor, plus two for Dr Khalid's full day
     const kDay = (appts.find(a => a.full) || {}).date;
-    const wl = APP.doctors.map((doc, i) => ({ id: 'W-' + (210 + i), name: P[(i * 3 + 5) % P.length], phone: fakePhone(r), doctor: doc.id, date: null, t: now - (3 + i * 7) * H, status: 'waiting' }));
-    if (kDay) wl.unshift({ id: 'W-209', name: P[11], phone: fakePhone(r), doctor: 'khalid', date: kDay, t: now - 2 * H, status: 'waiting' },
-      { id: 'W-208', name: P[6], phone: fakePhone(r), doctor: 'khalid', date: kDay, t: now - 9 * H, status: 'waiting' });
+    const wl = APP.doctors.map((doc, i) => { const pt = pool[(i * 5 + 3) % REG]; return { id: 'W-' + (210 + i), name: pt.name, phone: pt.phone, doctor: doc.id, date: null, t: now - (3 + i * 7) * H, status: 'waiting' }; });
+    if (kDay) wl.unshift({ id: 'W-209', name: pool[11].name, phone: pool[11].phone, doctor: 'khalid', date: kDay, t: now - 2 * H, status: 'waiting' },
+      { id: 'W-208', name: pool[6].name, phone: pool[6].phone, doctor: 'khalid', date: kDay, t: now - 9 * H, status: 'waiting' });
     Store.set('waitlist', wl);
 
-    // ratings from the last two weeks
+    // ratings from the last two weeks, each from someone who really visited (every third one is anonymous)
+    const done = appts.filter(a => a.status === 'done').sort((x, y) => when(y) - when(x));
     const ratings = [];
     for (let i = 0; i < 26; i++) {
-      const s = APP.sampleNotes[i % APP.sampleNotes.length], doc = APP.doctors[i % APP.doctors.length];
-      ratings.push({ id: 'R-' + (5200 - i), name: i % 3 === 0 ? null : pick(), phone: i % 3 === 0 ? null : fakePhone(r), stars: s.s, tags: s.tags, note: { ar: s.ar, en: s.en }, doctor: doc.id, t: now - (1.5 + i * 12.5) * H, google: s.s >= 4 && i % 2 === 0, pts: i % 3 === 0 ? 0 : RW().perRating, seed: true });
+      const s = APP.sampleNotes[i % APP.sampleNotes.length], v = done[(i * 3) % done.length], anon = i % 3 === 0;
+      ratings.push({ id: 'R-' + (5200 - i), name: anon ? null : v.name, phone: anon ? null : v.phone, stars: s.s, tags: s.tags, note: { ar: s.ar, en: s.en }, doctor: v.doctor, t: Math.min(now - 1.5 * H, when(v) + (3 + i % 5) * H), google: s.s >= 4 && i % 2 === 0, pts: anon ? 0 : RW().perRating, seed: true });
     }
     Store.set('ratings', ratings);
 
-    // wallets and some redeemed vouchers
+    // points: welcome when they first signed up, +50 per finished visit, +100 per rating
     const wallets = {}, vouchers = [];
-    appts.filter(x => x.status !== 'cancelled').slice(0, 36).forEach((x, i) => {
-      const w = wallets[x.phone] || (wallets[x.phone] = { name: x.name, points: 0, history: [] });
-      const at = now - (20 + i * 9) * H;
-      w.history.push({ t: at, pts: RW().perVisit, kind: 'visit' });
-      if (i % 2 === 0) w.history.push({ t: at + 2 * H, pts: RW().perRating, kind: 'rating' });
+    const wal = (ph, nm) => wallets[ph] || (wallets[ph] = { name: nm, points: 0, history: [] });
+    done.forEach(x => wal(x.phone, x.name).history.push({ t: when(x) + H, pts: RW().perVisit, kind: 'visit' }));
+    ratings.filter(x => x.phone).forEach(x => wal(x.phone, x.name).history.push({ t: x.t, pts: RW().perRating, kind: 'rating', rating: x.id }));
+    Object.keys(wallets).forEach(ph => {
+      const w = wallets[ph], at = Math.min.apply(null, w.history.map(h => h.t)) - 26 * H;
+      w.history.push({ t: at, pts: RW().welcome, kind: 'welcome' }); w.joined = at;
     });
     const codes = ['K7Q2', 'M3XA', 'R8TP', 'D4NW', 'H2ZC', 'P9LB', 'T5VE', 'B6GR'];
     Object.keys(wallets).forEach((ph, i) => {
       const w = wallets[ph]; w.points = w.history.reduce((s, h) => s + h.pts, 0);
-      if (i % 3 === 0 && w.points >= 150 && vouchers.length < codes.length) {
-        const rw = RW().catalog[vouchers.length % 3], at = now - (30 + i * 11) * H, used = vouchers.length % 3 !== 2;
-        vouchers.push({ code: RW().prefix + '-' + codes[vouchers.length], phone: ph, name: w.name, reward: rw.id, pts: rw.pts, t: at, expires: at + RW().voucherDays * 864e5, used, usedAt: used ? at + 26 * H : null });
-        w.points = Math.max(0, w.points - rw.pts); w.history.push({ t: at, pts: -rw.pts, kind: 'redeem', reward: rw.id });
+      if (i % 3 === 0 && vouchers.length < codes.length) {
+        const rw = RW().catalog[vouchers.length % 3];
+        if (w.points < rw.pts) return;
+        const at = Math.max.apply(null, w.history.map(h => h.t)) + 20 * H, used = vouchers.length % 3 !== 2;
+        if (at > now) return;
+        vouchers.push({ code: RW().prefix + '-' + codes[vouchers.length], phone: ph, name: w.name, reward: rw.id, pts: rw.pts, t: at, expires: at + RW().voucherDays * 864e5, used, usedAt: used ? Math.min(now - H, at + 26 * H) : null });
+        w.points -= rw.pts; w.history.push({ t: at, pts: -rw.pts, kind: 'redeem', reward: rw.id });
       }
+    });
+    // three patients who signed up on the portal in the last day, so "new user" shows in the bell
+    const fresh = [];
+    [[pool[197], 1.2], [pool[198], 4.5], [pool[199], 27]].forEach(([pt, hAgo], i) => {
+      const at = now - hAgo * H;
+      wallets[pt.phone] = { name: pt.name, points: RW().welcome, history: [{ t: at, pts: RW().welcome, kind: 'welcome' }], joined: at };
+      fresh.push({ id: 'N-' + (900 + i), type: 'new_user', t: at, phone: pt.phone, name: pt.name });
     });
     Store.set('wallets', wallets);
     Store.set('vouchers', vouchers);
-    Store.set('alerts', []);
+    Store.set('alerts', fresh);
     Store.set('vcf_saves', 84);
-    Store.set('seeded', true);
+    Store.set('seeded', SEED_V);
   }
 
   /* ---------- alerts for the staff page ---------- */
@@ -164,7 +199,7 @@
       const all = appts(), x = all.filter(a => a.full && isActive(a) && when(a) > Date.now()).sort((a, b) => when(a) - when(b))[0];
       if (x) { Object.assign(x, { name, phone, by: 'portal', demoMine: true }); save(all); }
     }
-    alert('signin', { phone, name });
+    if (first) alert('new_user', { phone, name });
     return me();
   }
   function signOut() { Store.set('me', null); }
@@ -175,7 +210,7 @@
   const reward = id => RW().catalog.find(c => c.id === id);
   function earn(phone, name, pts, kind, extra) {
     if (!phone || !pts) return wallet(phone);
-    const all = wallets(), w = all[phone] || (all[phone] = { name, points: 0, history: [] });
+    const all = wallets(), w = all[phone] || (all[phone] = { name, points: 0, history: [], joined: Date.now() });
     if (name) w.name = name;
     w.points += pts; w.history.unshift(Object.assign({ t: Date.now(), pts, kind }, extra || {}));
     Store.set('wallets', all);
